@@ -35,7 +35,7 @@ from edx_proctoring.models import (
 log = logging.getLogger(__name__)
 
 
-class NPOEDBackendProvider(ProctoringBackendProvider):
+class ExamusBackendProvider(ProctoringBackendProvider):
     """
     Implementation of the ProctoringBackendProvider
     """
@@ -69,9 +69,9 @@ class NPOEDBackendProvider(ProctoringBackendProvider):
             exam,
             context
         )
-        headers = {
-            "Content-Type": 'application/json'
-        }
+        # headers = {
+        #     "Content-Type": 'application/json'
+        # }
         http_date = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
         # signature = self._sign_doc(data, 'POST', headers, http_date)
         signature = base64.b64encode("{}:{}".format(
@@ -96,6 +96,7 @@ class NPOEDBackendProvider(ProctoringBackendProvider):
         # get the external ID that Proctor webassistant has defined
         # for this attempt
         ssi_record_locator = json.loads(response)['sessionID']
+        log.info(ssi_record_locator)
 
         return ssi_record_locator
 
