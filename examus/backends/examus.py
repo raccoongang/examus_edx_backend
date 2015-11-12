@@ -75,9 +75,9 @@ class ExamusBackendProvider(ProctoringBackendProvider):
         http_date = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
         # signature = self._sign_doc(data, 'POST', headers, http_date)
         signature = base64.b64encode("{}:{}".format(
-            settings.EXAMUS_PROCTORING_AUTH['username']),
+            settings.EXAMUS_PROCTORING_AUTH['username'],
             settings.EXAMUS_PROCTORING_AUTH['password']
-        )
+        ))
 
         status, response = self._send_request_to_ssi(data, signature, http_date)
 
