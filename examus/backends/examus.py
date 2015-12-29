@@ -123,24 +123,24 @@ class ExamusBackendProvider(ProctoringBackendProvider):
     def on_review_callback(self, payload):
         """
         Called when the reviewing 3rd party service posts back the results
-        Documentation on the data format can be found from ProctorWebassistant's
+        Documentation on the data format can be found from Examus'
         documentation named "Reviewer Data Transfer"
         """
 
         log_msg = (
-            'Received callback from ProctorWebassistant with review data: {payload}'.format(
+            'Received callback from Examus Proctoring with review data: {payload}'.format(
                 payload=payload
             )
         )
         log.info(log_msg)
 
-        # what we consider the external_id is ProctorWebassistant's 'ssiRecordLocator'
+        # what we consider the external_id is Examus' 'ssiRecordLocator'
         external_id = payload['examMetaData']['ssiRecordLocator']
 
-        # what we consider the attempt_code is ProctorWebassistant's 'examCode'
+        # what we consider the attempt_code is Examus' 'examCode'
         attempt_code = payload['examMetaData']['examCode']
 
-        # get the ProctorWebassistant status on this attempt
+        # get the Examus Proctoring status on this attempt
         review_status = payload['reviewStatus']
 
         bad_status = review_status not in self.passing_review_status + self.failing_review_status
@@ -166,7 +166,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
             raise StudentExamAttemptDoesNotExistsException(err_msg)
 
         # then make sure we have the right external_id
-        # note that ProctorWebassistant might send a case insensitive
+        # note that Examus Proctoring might send a case insensitive
         # ssiRecordLocator than what it returned when we registered the
         # exam
         match = (
@@ -195,7 +195,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
         if review:
             if not constants.ALLOW_REVIEW_UPDATES:
                 err_msg = (
-                    'We already have a review submitted from ProctorWebassistant regarding '
+                    'We already have a review submitted from Examus Proctoring regarding '
                     'attempt_code {attempt_code}. We do not allow for updates!'.format(
                         attempt_code=attempt_code
                     )
@@ -204,7 +204,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
 
             # we allow updates
             warn_msg = (
-                'We already have a review submitted from ProctorWebassistant regarding '
+                'We already have a review submitted from Examus Proctoring regarding '
                 'attempt_code {attempt_code}. We have been configured to allow for '
                 'updates and will continue...'.format(
                     attempt_code=attempt_code
@@ -388,7 +388,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
 
     def _header_string(self, headers, date):
         """
-        Composes the HTTP header string that ProctorWebassistant expects
+        Composes the HTTP header string that Examus Proctoring expects
         """
         # Headers
         string = ""
@@ -404,7 +404,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
 
     def _body_string(self, body_json, prefix=""):
         """
-        Serializes out the HTTP body that ProctorWebassistant expects
+        Serializes out the HTTP body that Examus Proctoring expects
         """
         keys = body_json.keys()
         keys.sort()
@@ -433,7 +433,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
 
     def _sign_doc(self, body_json, method, headers, date):
         """
-        Digitaly signs the datapayload that ProctorWebassistant expects
+        Digitaly signs the datapayload that Examus Proctoring expects
         """
         body_str = self._body_string(body_json)
 
@@ -446,7 +446,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
         message = str(message)
 
         log_msg = (
-            'About to send payload to ProctorWebassistant:\n{message}'.format(message=message)
+            'About to send payload to Examus Proctoring:\n{message}'.format(message=message)
         )
         log.info(log_msg)
 
@@ -457,7 +457,7 @@ class ExamusBackendProvider(ProctoringBackendProvider):
 
     def _send_request_to_ssi(self, data, sig, date):
         """
-        Performs the webservice call to ProctorWebassistant
+        Performs the webservice call to Examus Proctoring
         """
         response = requests.post(
             self.exam_register_endpoint,
